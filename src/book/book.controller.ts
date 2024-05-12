@@ -13,6 +13,7 @@ import { CreateBookDto, UpdateBookDto } from './book.dto';
 import { BookOwnerGuard } from 'src/auth/guards/book-owner.guard';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { ApiBasicAuth } from '@nestjs/swagger';
 
 @Controller('/books')
 export class BookController {
@@ -30,6 +31,7 @@ export class BookController {
 
   @Post()
   @UseGuards(AuthGuard)
+  @ApiBasicAuth('x-auth-userid')
   async createBook(@Body() data: CreateBookDto, @CurrentUser() userId: number) {
     return this.bookService.createBook(data, userId);
   }
@@ -37,6 +39,7 @@ export class BookController {
   @Put('/:id')
   @UseGuards(AuthGuard)
   @UseGuards(BookOwnerGuard)
+  @ApiBasicAuth('x-auth-userid')
   async updateBook(@Param('id') id: string, @Body() data: UpdateBookDto) {
     return this.bookService.updateBook(id, data);
   }
@@ -44,6 +47,7 @@ export class BookController {
   @Delete('/:id')
   @UseGuards(AuthGuard)
   @UseGuards(BookOwnerGuard)
+  @ApiBasicAuth('x-auth-userid')
   async deleteBook(@Param('id') id: string) {
     return this.bookService.deleteBook(id);
   }

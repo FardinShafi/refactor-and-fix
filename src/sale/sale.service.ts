@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -24,9 +23,20 @@ export class SaleService {
     });
   }
 
-  async createSale(data: Prisma.SaleCreateManyInput) {
+  async createSale(bookId: string, userId: number) {
+    const book = await this.dbService.book.findUnique({
+      where: { id: bookId },
+      select: {
+        price: true,
+      },
+    });
     return this.dbService.sale.create({
-      data,
+      data: {
+        bookId,
+        userId,
+        price: book.price,
+        date: new Date().toISOString().split('T')[0],
+      },
     });
   }
 }

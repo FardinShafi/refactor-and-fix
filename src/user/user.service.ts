@@ -15,10 +15,6 @@ export class UserService {
   }
 
   async getSales(userId: number) {
-    const books = await this.dbService.book.findMany({ where: { userId } });
-    const sales = await this.dbService.sale.findMany({
-      where: { bookId: { in: books.map((book) => book.id) } },
-    });
-    return sales;
+    return this.dbService.sale.findMany({ where: { userId } });
   }
 }

@@ -10,6 +10,8 @@ import {
 import { SaleService } from './sale.service';
 import { CreateSaleDto } from './sale.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { ApiBasicAuth } from '@nestjs/swagger';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('/sales')
 export class SaleController {
@@ -27,7 +29,8 @@ export class SaleController {
 
   @Post()
   @UseGuards(AuthGuard)
-  createSale(@Body() data: CreateSaleDto) {
-    return this.saleService.createSale(data);
+  @ApiBasicAuth('x-auth-userid')
+  createSale(@Body() data: CreateSaleDto, @CurrentUser() userId: number) {
+    return this.saleService.createSale(data.bookId, userId);
   }
 }

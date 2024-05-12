@@ -8,7 +8,7 @@ export class BookOwnerGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const bookId = request.params.id;
-    const userId = Number(request.headers['x-auth-userid']);
+    const userId = request.headers['x-auth-userid'] as number;
 
     const book = await this.dbService.book.findUnique({
       where: { id: bookId },
